@@ -1,0 +1,360 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Ignite Challenge SOLID Documentation",
+    "description": "This is a documentation about the Ignite's challenge API.",
+    "contact": {
+      "name": "Tarcizio Barbosa",
+      "url": "https://github.com/tarcizio-barbosa",
+      "email": "tarcizio.barbosa@outlook.com"
+    },
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/users": {
+      "post": {
+        "tags": ["User"],
+        "summary": "This route create a new User.",
+        "description": "This route can create a new User from two given information.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  }
+                },
+                "example": {
+                  "name": "Lady Gaga",
+                  "email": "lady@gaga.com"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created a new User",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "admin": {
+                      "type": "boolean"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "date"
+                    },
+                    "updated_at": {
+                      "type": "date"
+                    }
+                  },
+                  "example": {
+                      "id": "c990492a-6d70-424d-88b0-44660894a103",
+                      "admin": false,
+                      "name": "Lady Gaga",
+                      "email": "lady@gaga.com",
+                      "created_at": "2021-09-07T14:14:13.852Z",
+                      "updated_at": "2021-09-07T14:14:13.852Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Cannot create a User with the same e-mail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "error": "This user e-mail already exists."
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["User"],
+        "summary": "This route list all Users.",
+        "description": "This route return a list of all users. If it does not exists, the route returns a empty array.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "header",
+            "description": "The User Id must be passed in the header of request. The User Id always will be a UUID.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "c990492a-6d70-424d-88b0-44660894a103"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "admin": {
+                        "type": "boolean"
+                      },
+                      "email": {
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "type": "date"
+                      },
+                      "updated_at": {
+                        "type": "date"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "Empty Users List": {
+                    "value": []
+                  },
+                  "List of One or More Users": {
+                    "value": [
+                      {
+                        "id": "c990492a-6d70-424d-88b0-44660894a103",
+                        "admin": false,
+                        "name": "Lady Gaga",
+                        "email": "lady@gaga.com",
+                        "created_at": "2021-09-07T14:14:13.852Z",
+                        "updated_at": "2021-09-07T14:14:13.852Z"
+                     },
+                     {
+                        "id": "c990492a-6d70-424d-88b0-44660894a103",
+                        "admin": false,
+                        "name": "Lady Gaga",
+                        "email": "lady@gaga.com",
+                        "created_at": "2021-09-07T14:14:13.852Z",
+                        "updated_at": "2021-09-07T14:14:13.852Z"
+                   },
+                   {
+                        "id": "c990492a-6d70-424d-88b0-44660894a103",
+                        "admin": false,
+                        "name": "Lady Gaga",
+                        "email": "lady@gaga.com",
+                        "created_at": "2021-09-07T14:14:13.852Z",
+                       "updated_at": "2021-09-07T14:14:13.852Z"
+                 }
+                  ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Only admin Users can list all users.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "error": "This user is not a admin."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}": {
+      "get": {
+        "tags": ["User"],
+        "summary": "This route returns one User.",
+        "description": "This route return only a user. If it does not exists, the route returns an error.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "description": "The User Id must be passed in the url path's request. The User Id always will be a UUID.",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "c990492a-6d70-424d-88b0-44660894a103"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "admin": {
+                      "type": "boolean"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "date"
+                    },
+                    "updated_at": {
+                      "type": "date"
+                    }
+                  },
+                  "example": {
+                    "id": "c990492a-6d70-424d-88b0-44660894a103",
+                    "admin": false,
+                    "name": "Lady Gaga",
+                    "email": "lady@gaga.com",
+                    "created_at": "2021-09-07T14:14:13.852Z",
+                    "updated_at": "2021-09-07T14:14:13.852Z"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "It was not possible to find a User.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "error": "User not found."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "users/{user_id}/admin": {
+      "patch": {
+        "tags": ["User"],
+        "summary": "This route turn a user into a admin",
+        "description": "By default a User is not a admin. This route change the property adm to true.",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "c990492a-6d70-424d-88b0-44660894a103"
+            },
+            "style": "simple"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Request successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "admin": {
+                      "type": "boolean"
+                    },
+                    "email": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "date"
+                    },
+                    "updated_at": {
+                      "type": "date"
+                    }
+                  },
+                  "example": {
+                    "id": "c990492a-6d70-424d-88b0-44660894a103",
+                    "admin": true,
+                    "name": "Lady Gaga",
+                    "email": "lady@gaga.com",
+                    "created_at": "2021-09-07T14:14:13.852Z",
+                    "updated_at": "2021-09-07T14:14:13.852Z"
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "It was not possible to find a User.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    }
+                  },
+                  "example": {
+                    "error": "User not found."
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
